@@ -245,7 +245,7 @@ namespace Xamarin.Bundler {
 		}
 		public AssemblyBuildTarget LibPInvokesLinkMode => LibXamarinLinkMode;
 		public AssemblyBuildTarget LibProfilerLinkMode => OnlyStaticLibraries ? AssemblyBuildTarget.StaticObject : AssemblyBuildTarget.DynamicLibrary;
-		public AssemblyBuildTarget LibMonoNativeLinkMode => LibProfilerLinkMode;
+		public AssemblyBuildTarget LibMonoNativeLinkMode => LibMonoLinkMode;
 
 		Dictionary<string, BundleFileInfo> bundle_files = new Dictionary<string, BundleFileInfo> ();
 
@@ -1622,10 +1622,10 @@ namespace Xamarin.Bundler {
 				}
 			}
 
-			if (MonoNativeMode != MonoNativeMode.None && LibMonoNativeLinkMode == AssemblyBuildTarget.DynamicLibrary) {
+			if (MonoNativeMode != MonoNativeMode.None && (true || LibMonoNativeLinkMode == AssemblyBuildTarget.DynamicLibrary)) {
 				BundleFileInfo info;
 				var lib_native_name = GetLibNativeName () + ".dylib";
-				bundle_files[lib_native_name] = info = new BundleFileInfo ();
+				bundle_files["libmono-native.dylib"] = info = new BundleFileInfo ();
 				var lib_native_path = Path.Combine (Driver.GetMonoTouchLibDirectory (this), lib_native_name);
 				info.Sources.Add (lib_native_path);
 				Driver.Log (3, "Adding mono-native library {0} for {1}.", lib_native_name, MonoNativeMode);

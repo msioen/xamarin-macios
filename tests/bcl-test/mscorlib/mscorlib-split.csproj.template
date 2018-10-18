@@ -43,5 +43,10 @@
   <ItemGroup>
 #FILES#
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\..\external\mono\mcs\class\test-helpers\TestResourceHelper.cs">
+	  <Link>TestResourceHelper.cs</Link>
+	</Compile>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>
