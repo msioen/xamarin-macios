@@ -243,9 +243,21 @@ namespace Xamarin.Bundler {
 				}
 			}
 		}
+		public AssemblyBuildTarget LibMonoNativeLinkMode {
+			get {
+				if (Embeddinator) {
+					return AssemblyBuildTarget.StaticObject;
+				} else if (HasFrameworks || UseMonoFramework.Value) {
+					return AssemblyBuildTarget.DynamicLibrary;
+				} else if (HasDynamicLibraries) {
+					return AssemblyBuildTarget.DynamicLibrary;
+				} else {
+					return AssemblyBuildTarget.StaticObject;
+				}
+			}
+		}
 		public AssemblyBuildTarget LibPInvokesLinkMode => LibXamarinLinkMode;
 		public AssemblyBuildTarget LibProfilerLinkMode => OnlyStaticLibraries ? AssemblyBuildTarget.StaticObject : AssemblyBuildTarget.DynamicLibrary;
-		public AssemblyBuildTarget LibMonoNativeLinkMode => LibMonoLinkMode;
 
 		Dictionary<string, BundleFileInfo> bundle_files = new Dictionary<string, BundleFileInfo> ();
 
@@ -1622,7 +1634,7 @@ namespace Xamarin.Bundler {
 				}
 			}
 
-			if (MonoNativeMode != MonoNativeMode.None && (true || LibMonoNativeLinkMode == AssemblyBuildTarget.DynamicLibrary)) {
+			if (MonoNativeMode != MonoNativeMode.None && (LibMonoNativeLinkMode == AssemblyBuildTarget.DynamicLibrary)) {
 				BundleFileInfo info;
 				var lib_native_name = GetLibNativeName () + ".dylib";
 				bundle_files["libmono-native.dylib"] = info = new BundleFileInfo ();
@@ -1870,6 +1882,22 @@ namespace Xamarin.Bundler {
 				throw ErrorHelper.CreateError (100, "Invalid assembly build target: '{0}'. Please file a bug report with a test case (https://github.com/xamarin/xamarin-macios/issues/new).", build_target);
 			}
 		}
+
+		public string GetLibMonoNative (AssemblyBuildTarget build_target)
+		{
+			var name = GetLibNativeName ();
+			switch (build_target) {
+			case AssemblyBuildTarget.StaticObject:
+				return Path.Combine (Driver.GetMonoTouchLibDirectory (this), name + ".a"); 
+			case AssemblyBuildTarget.DynamicLibrary:
+				return Path.Combine (Driver.GetMonoTouchLibDirectory (this), name + ".dylib");
+			case AssemblyBuildTarget.Framework:
+				return Path.Combine (Driver.GetProductSdkDirectory (this), "Frameworks", "Mono.Native.framework");
+			default:
+				throw ErrorHelper.CreateError (100, "Invalid assembly build target: '{0}'. Please file a bug report with a test case (https://github.com/xamarin/xamarin-macios/issues/new).", build_target);
+			}
+		}
+
 
 		public string GetLibNativeName ()
 		{
