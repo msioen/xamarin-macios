@@ -959,7 +959,6 @@ namespace Xamarin.Bundler
 					}
 					pinvoke_task.CompilerFlags.AddFramework ("Foundation");
 					pinvoke_task.CompilerFlags.LinkWithXamarin ();
-					pinvoke_task.CompilerFlags.LinkWithMonoNative ();
 				}
 				pinvoke_tasks.Add (abi, pinvoke_task);
 
@@ -1116,7 +1115,6 @@ namespace Xamarin.Bundler
 					}
 					compiler_flags.LinkWithMono ();
 					compiler_flags.LinkWithXamarin ();
-					compiler_flags.LinkWithMonoNative ();
 					if (GetAllSymbols ().Contains ("UIApplicationMain"))
 						compiler_flags.AddFramework ("UIKit");
 
@@ -1133,7 +1131,7 @@ namespace Xamarin.Bundler
 						}
 					}
 
-					// HandleMonoNative (App, compiler_flags);
+					HandleMonoNative (App, compiler_flags);
 
 					var link_task = new LinkTask () {
 						Target = this,
@@ -1449,8 +1447,6 @@ namespace Xamarin.Bundler
 			linker_flags.LinkWithXamarin ();
 			if (App.LibXamarinLinkMode != AssemblyBuildTarget.StaticObject)
 				AddToBundle (App.GetLibXamarin (App.LibXamarinLinkMode));
-			if (App.MonoNativeMode != MonoNativeMode.None && App.LibMonoNativeLinkMode != AssemblyBuildTarget.StaticObject)
-				AddToBundle (App.GetLibMonoNative (App.LibMonoNativeLinkMode));
 
 			linker_flags.AddOtherFlag ($"-o {StringUtils.Quote (Executable)}");
 
@@ -1567,11 +1563,6 @@ namespace Xamarin.Bundler
 				break;
 			case AssemblyBuildTarget.StaticObject:
 				libnative = Path.Combine (libdir, libnative + ".a");
-				compiler_flags.AddLinkWith (libnative);
-				break;
-			case AssemblyBuildTarget.Framework:
-				Console.Error.WriteLine ($"FUCK!");
-				libnative = Path.Combine (libdir, libnative + ".dylib");
 				compiler_flags.AddLinkWith (libnative);
 				break;
 			default:

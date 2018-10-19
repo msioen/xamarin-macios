@@ -154,26 +154,6 @@ namespace Xamarin.Utils
 				Frameworks.Add ("CFNetwork"); // required by xamarin_start_wwan
 		}
 
-		public void LinkWithMonoNative ()
-		{
-			if (Application.MonoNativeMode == MonoNativeMode.None)
-				return;
-			var mode = Target.App.LibMonoNativeLinkMode;
-			switch (mode) {
-			case AssemblyBuildTarget.DynamicLibrary:
-			case AssemblyBuildTarget.StaticObject:
-				AddLinkWith (Application.GetLibMonoNative (mode));
-				break;
-			case AssemblyBuildTarget.Framework:
-				AddFramework (Application.GetLibMonoNative (mode));
-				break;
-			default:
-				throw ErrorHelper.CreateError (100, "Invalid assembly build target: '{0}'. Please file a bug report with a test case (https://github.com/xamarin/xamarin-macios/issues/new).", mode);
-			}
-		}
-
-
-
 		public void AddFramework (string framework)
 		{
 			if (Frameworks == null)
