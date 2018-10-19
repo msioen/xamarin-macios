@@ -3,6 +3,8 @@ MONO_ROOT = $(ROOT)/external/mono
 COREFX_ROOT = $(MONO_ROOT)/external/corefx
 SIM64_BUILD_ROOT = $(MONO_ROOT)/sdks/builds/ios-sim64-release
 SIM64_BUILD_OUT = $(MONO_ROOT)/sdks/out/ios-sim64-release
+TARGET32_BUILD_ROOT = $(MONO_ROOT)/sdks/builds/ios-target32-release
+TARGET32_BUILD_OUT = $(MONO_ROOT)/sdks/out/ios-target32-release
 MAC_BUILD_ROOT = $(ROOT)/builds/mac64
 MAC_BUILD_OUT = $(ROOT)/builds/install/mac64
 
@@ -36,6 +38,11 @@ sim64-runtime::
 	$(MAKE) -C $(SIM64_BUILD_ROOT)/mono all install
 	cp $(SIM64_BUILD_OUT)/lib/libmono-apple-crypto.* $(IOS_SDK_INSTALL)/SDKs/MonoTouch.iphonesimulator.sdk/usr/lib/
 	cp $(SIM64_BUILD_OUT)/lib/libmonosgen-* $(IOS_SDK_INSTALL)/SDKs/MonoTouch.iphonesimulator.sdk/usr/lib/
+
+target32-runtime::
+	$(MAKE) -C $(TARGET32_BUILD_ROOT)/mono all install
+	cp $(TARGET32_BUILD_OUT)/lib/libmono-native* $(IOS_SDK_INSTALL)/SDKs/MonoTouch.iphoneos.sdk/usr/lib/
+	cp $(TARGET32_BUILD_OUT)/lib/libmonosgen-* $(IOS_SDK_INSTALL)/SDKs/MonoTouch.iphoneos.sdk/usr/lib/
 
 mac-runtime::
 	$(MAKE) -C $(MAC_BUILD_ROOT)/mono all install
