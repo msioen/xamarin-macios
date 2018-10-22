@@ -41,8 +41,8 @@ sim64-runtime::
 
 target32-runtime::
 	$(MAKE) -C $(TARGET32_BUILD_ROOT)/mono all install
-	cp $(TARGET32_BUILD_OUT)/lib/libmono-native* $(IOS_SDK_INSTALL)/SDKs/MonoTouch.iphoneos.sdk/usr/lib/
-	cp $(TARGET32_BUILD_OUT)/lib/libmonosgen-* $(IOS_SDK_INSTALL)/SDKs/MonoTouch.iphoneos.sdk/usr/lib/
+	#cp $(TARGET32_BUILD_OUT)/lib/libmono-native* $(IOS_SDK_INSTALL)/SDKs/MonoTouch.iphoneos.sdk/usr/lib/
+	#cp $(TARGET32_BUILD_OUT)/lib/libmonosgen-* $(IOS_SDK_INSTALL)/SDKs/MonoTouch.iphoneos.sdk/usr/lib/
 
 mac-runtime::
 	$(MAKE) -C $(MAC_BUILD_ROOT)/mono all install
