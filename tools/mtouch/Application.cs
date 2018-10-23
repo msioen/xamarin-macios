@@ -1622,13 +1622,14 @@ namespace Xamarin.Bundler {
 				}
 			}
 
+			Console.Error.WriteLine ($"MONO NATIVE: {MonoNativeMode} {LibMonoNativeLinkMode} {this}");
+
 			if (MonoNativeMode != MonoNativeMode.None && (LibMonoNativeLinkMode == AssemblyBuildTarget.DynamicLibrary)) {
 				BundleFileInfo info;
 				var lib_native_name = GetLibNativeName () + ".dylib";
 				bundle_files[lib_native_name] = info = new BundleFileInfo ();
 				var lib_native_path = Path.Combine (Driver.GetMonoTouchLibDirectory (this), lib_native_name);
 				info.Sources.Add (lib_native_path);
-				Console.Error.WriteLine ($"MONO NATIVE: {MonoNativeMode} {lib_native_name} {LibMonoNativeLinkMode} {this}");
 				Driver.Log (3, "Adding mono-native library {0} for {1}.", lib_native_name, MonoNativeMode);
 			}
 

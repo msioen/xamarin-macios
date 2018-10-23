@@ -1628,6 +1628,24 @@ namespace Xamarin.Bundler
 
 			Symlinked = true;
 
+			if (App.MonoNativeMode != MonoNativeMode.None) {
+				var lib_native_target = Path.Combine (TargetDirectory, "libmono-native.dylib");
+				Application.TryDelete (lib_native_target);
+
+				try {
+					Console.Error.WriteLine ($"SYMLINKING MONO NATIVE!");
+					var lib_native_name = App.GetLibNativeName () + ".dylib";
+					var lib_native_path = Path.Combine (Driver.GetMonoTouchLibDirectory (App), lib_native_name);
+					File.Copy (lib_native_path, lib_native_target);
+					File.SetLastWriteTime (lib_native_path, DateTime.Now);
+					Driver.Log (3, "Adding mono-native library {0} for {1}.", lib_native_name, App.MonoNativeMode);
+				} catch (MonoTouchException) {
+					throw;
+				} catch (Exception ex) {
+					throw new MonoTouchException (1015, true, ex, "Failed to create the Mono.Native library '{0}': {1}", lib_native_target, ex.Message);
+				}
+			}
+
 			if (Driver.Verbosity > 0)
 				Console.WriteLine ("Application ({0}) was built using fast-path for simulator.", string.Join (", ", Abis.ToArray ()));
 		}
