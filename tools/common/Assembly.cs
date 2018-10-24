@@ -378,6 +378,8 @@ namespace Xamarin.Bundler {
 					switch (file) {
 					// special case
 					case "__Internal":
+					case "System.Native":
+					case "System.Security.Cryptography.Native.Apple":
 					// well known libs
 					case "libc":
 					case "libSystem":
