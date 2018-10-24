@@ -1421,7 +1421,11 @@ namespace Xamarin.Bundler {
 		{
 			switch (Platform) {
 			case ApplePlatform.iOS:
+			case ApplePlatform.TVOS:
 				MonoNativeMode = DeploymentTarget.Major >= 10 ? MonoNativeMode.Unified : MonoNativeMode.Compat;
+				break;
+			case ApplePlatform.WatchOS:
+				MonoNativeMode = DeploymentTarget.Major >= 3 ? MonoNativeMode.Unified : MonoNativeMode.Compat;
 				break;
 			default:
 				MonoNativeMode = MonoNativeMode.None;

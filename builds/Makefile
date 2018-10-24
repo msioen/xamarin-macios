@@ -1046,21 +1046,33 @@ clean-tvsimulator:
 	$(Q) rm -rf .stamp-*-tvsimulator $(BUILD_DESTDIR)/tvsimulator
 	$(MAKE) -C $(SDK_BUILDDIR) clean-ios-simtv $(SDK_ARGS)
 
-TVSIMULATOR_LIBMONOSGEN          = $(BUILD_DESTDIR)/tvsimulator/lib/libmonosgen-2.0.a
-TVSIMULATOR_SHAREDMONOSGEN       = $(BUILD_DESTDIR)/tvsimulator/lib/libmonosgen-2.0.dylib
-TVSIMULATOR_LIBLOGPROFILER       = $(BUILD_DESTDIR)/tvsimulator/lib/libmono-profiler-log-static.a
-TVSIMULATOR_SHAREDLIBLOGPROFILER = $(BUILD_DESTDIR)/tvsimulator/lib/libmono-profiler-log.0.dylib
+TVSIMULATOR_LIBMONOSGEN                = $(BUILD_DESTDIR)/tvsimulator/lib/libmonosgen-2.0.a
+TVSIMULATOR_SHAREDMONOSGEN             = $(BUILD_DESTDIR)/tvsimulator/lib/libmonosgen-2.0.dylib
+TVSIMULATOR_LIBLOGPROFILER             = $(BUILD_DESTDIR)/tvsimulator/lib/libmono-profiler-log-static.a
+TVSIMULATOR_SHAREDLIBLOGPROFILER       = $(BUILD_DESTDIR)/tvsimulator/lib/libmono-profiler-log.0.dylib
+TVSIMULATOR_LIBMONONATIVECOMPAT        = $(BUILD_DESTDIR)/tvsimulator/lib/libmono-native-compat.a
+TVSIMULATOR_LIBMONONATIVEUNIFIED       = $(BUILD_DESTDIR)/tvsimulator/lib/libmono-native-unified.a
+TVSIMULATOR_SHAREDLIBMONONATIVECOMPAT  = $(BUILD_DESTDIR)/tvsimulator/lib/libmono-native-compat.dylib
+TVSIMULATOR_SHAREDLIBMONONATIVEUNIFIED = $(BUILD_DESTDIR)/tvsimulator/lib/libmono-native-unified.dylib
 
 $(TVSIMULATOR_LIBMONOSGEN): .stamp-build-tvsimulator
 $(TVSIMULATOR_SHAREDMONOSGEN): .stamp-build-tvsimulator
 $(TVSIMULATOR_LIBLOGPROFILER): .stamp-build-tvsimulator
 $(TVSIMULATOR_SHAREDLIBLOGPROFILER): .stamp-build-tvsimulator
+$(TVSIMULATOR_LIBMONONATIVECOMPAT): .stamp-build-tvsimulator
+$(TVSIMULATOR_LIBMONONATIVEUNIFIED): .stamp-build-tvsimulator
+$(TVSIMULATOR_SHAREDLIBMONONATIVECOMPAT): .stamp-build-tvsimulator
+$(TVSIMULATOR_SHAREDLIBMONONATIVEUNIFIED): .stamp-build-tvsimulator
 
 TVSIMULATOR_TARGETS = \
 	$(IOS_DESTDIR)$(XAMARIN_TVSIMULATOR_SDK)/usr/lib/libmonosgen-2.0.a            \
 	$(IOS_DESTDIR)$(XAMARIN_TVSIMULATOR_SDK)/usr/lib/libmonosgen-2.0.dylib        \
 	$(IOS_DESTDIR)$(XAMARIN_TVSIMULATOR_SDK)/usr/lib/libmono-profiler-log.a       \
 	$(IOS_DESTDIR)$(XAMARIN_TVSIMULATOR_SDK)/usr/lib/libmono-profiler-log.dylib   \
+	$(IOS_DESTDIR)$(XAMARIN_TVSIMULATOR_SDK)/usr/lib/libmono-native-compat.a      \
+	$(IOS_DESTDIR)$(XAMARIN_TVSIMULATOR_SDK)/usr/lib/libmono-native-unified.a     \
+	$(IOS_DESTDIR)$(XAMARIN_TVSIMULATOR_SDK)/usr/lib/libmono-native-compat.dylib  \
+	$(IOS_DESTDIR)$(XAMARIN_TVSIMULATOR_SDK)/usr/lib/libmono-native-unified.dylib \
 	$(IOS_DESTDIR)$(XAMARIN_TVSIMULATOR_SDK)/Frameworks/Mono.framework/Mono       \
 	$(IOS_DESTDIR)$(XAMARIN_TVSIMULATOR_SDK)/Frameworks/Mono.framework/Info.plist \
 
@@ -1082,6 +1094,22 @@ $(IOS_DESTDIR)$(XAMARIN_TVSIMULATOR_SDK)/usr/lib/libmono-profiler-log.a: $(TVSIM
 $(IOS_DESTDIR)$(XAMARIN_TVSIMULATOR_SDK)/usr/lib/libmono-profiler-log.dylib: $(TVSIMULATOR_SHAREDLIBLOGPROFILER) | $(IOS_DESTDIR)$(XAMARIN_TVSIMULATOR_SDK)/usr/lib
 	$(Q) $(TVOS_BIN_PATH)/lipo $(TVSIMULATOR_SHAREDLIBLOGPROFILER) -create -output $@
 	$(Q) $(TVOS_BIN_PATH)/install_name_tool -id @rpath/libmono-profiler-log.dylib -change $(SDK_DESTDIR)/ios-simtv-release/lib/libmonosgen-2.0.1.dylib @rpath/libmonosgen-2.0.dylib $@
+	$(Q) dsymutil -t 4 -o $@.dSYM $@
+
+$(IOS_DESTDIR)$(XAMARIN_TVSIMULATOR_SDK)/usr/lib/libmono-native-compat.a: $(TVSIMULATOR_LIBMONONATIVECOMPAT) | $(IOS_DESTDIR)$(XAMARIN_TVSIMULATOR_SDK)/usr/lib
+	$(Q) $(TVOS_BIN_PATH)/lipo $(TVSIMULATOR_LIBMONONATIVECOMPAT) -create -output $@
+
+$(IOS_DESTDIR)$(XAMARIN_TVSIMULATOR_SDK)/usr/lib/libmono-native-compat.dylib: $(TVSIMULATOR_SHAREDLIBMONONATIVECOMPAT) | $(IOS_DESTDIR)$(XAMARIN_TVSIMULATOR_SDK)/usr/lib
+	$(Q) $(TVOS_BIN_PATH)/lipo $(TVSIMULATOR_SHAREDLIBMONONATIVECOMPAT) -create -output $@
+	$(Q) $(TVOS_BIN_PATH)/install_name_tool -id @rpath/libmono-native-compat.dylib -change $(SDK_DESTDIR)/ios-simtv-release/lib/libmono-native-compat.dylib @rpath/libmono-native-compat.dylib $@
+	$(Q) dsymutil -t 4 -o $@.dSYM $@
+
+$(IOS_DESTDIR)$(XAMARIN_TVSIMULATOR_SDK)/usr/lib/libmono-native-unified.a: $(TVSIMULATOR_LIBMONONATIVEUNIFIED) | $(IOS_DESTDIR)$(XAMARIN_TVSIMULATOR_SDK)/usr/lib
+	$(Q) $(TVOS_BIN_PATH)/lipo $(TVSIMULATOR_LIBMONONATIVEUNIFIED) -create -output $@
+
+$(IOS_DESTDIR)$(XAMARIN_TVSIMULATOR_SDK)/usr/lib/libmono-native-unified.dylib: $(TVSIMULATOR_SHAREDLIBMONONATIVEUNIFIED) | $(IOS_DESTDIR)$(XAMARIN_TVSIMULATOR_SDK)/usr/lib
+	$(Q) $(TVOS_BIN_PATH)/lipo $(TVSIMULATOR_SHAREDLIBMONONATIVEUNIFIED) -create -output $@
+	$(Q) $(TVOS_BIN_PATH)/install_name_tool -id @rpath/libmono-native-unified.dylib -change $(SDK_DESTDIR)/ios-simtv-release/lib/libmono-native-unified.dylib @rpath/libmono-native-unified.dylib $@
 	$(Q) dsymutil -t 4 -o $@.dSYM $@
 
 $(TVSIMULATOR_DIRECTORIES):
