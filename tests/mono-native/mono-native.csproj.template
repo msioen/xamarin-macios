@@ -27,6 +27,7 @@
     <MtouchDebug>True</MtouchDebug>
     <MtouchLink>None</MtouchLink>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <MtouchExtraArgs>-v -v -xml=${ProjectDir}/extra-linker-defs.xml</MtouchExtraArgs>
     <MtouchArch>i386, x86_64</MtouchArch>
     <CodesignKey>iPhone Developer</CodesignKey>
     <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
@@ -40,6 +41,7 @@
     <WarningLevel>4</WarningLevel>
     <MtouchLink>None</MtouchLink>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <MtouchExtraArgs>-v -v -xml=${ProjectDir}/extra-linker-defs.xml</MtouchExtraArgs>
     <MtouchArch>i386, x86_64</MtouchArch>
     <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
   </PropertyGroup>
@@ -54,6 +56,7 @@
     <CodesignKey>iPhone Developer</CodesignKey>
     <MtouchDebug>True</MtouchDebug>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <MtouchExtraArgs>-v -v -xml=${ProjectDir}/extra-linker-defs.xml</MtouchExtraArgs>
     <MtouchArch>ARMv7, ARM64</MtouchArch>
     <MtouchLink>SdkOnly</MtouchLink>
     <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
@@ -69,6 +72,7 @@
     <CodesignKey>iPhone Developer</CodesignKey>
     <MtouchDebug>True</MtouchDebug>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <MtouchExtraArgs>-v -v -xml=${ProjectDir}/extra-linker-defs.xml</MtouchExtraArgs>
     <MtouchArch>ARMv7</MtouchArch>
     <MtouchLink>SdkOnly</MtouchLink>
     <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
@@ -84,6 +88,7 @@
     <CodesignKey>iPhone Developer</CodesignKey>
     <MtouchDebug>True</MtouchDebug>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <MtouchExtraArgs>-v -v -xml=${ProjectDir}/extra-linker-defs.xml</MtouchExtraArgs>
     <MtouchArch>ARM64</MtouchArch>
     <MtouchLink>SdkOnly</MtouchLink>
     <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
@@ -96,6 +101,7 @@
     <WarningLevel>4</WarningLevel>
     <CodesignKey>iPhone Developer</CodesignKey>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <MtouchExtraArgs>-v -v -xml=${ProjectDir}/extra-linker-defs.xml</MtouchExtraArgs>
     <MtouchArch>ARMv7, ARM64</MtouchArch>
     <MtouchUseLlvm>true</MtouchUseLlvm>
     <MtouchLink>SdkOnly</MtouchLink>
@@ -109,6 +115,7 @@
     <WarningLevel>4</WarningLevel>
     <CodesignKey>iPhone Developer</CodesignKey>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <MtouchExtraArgs>-v -v -xml=${ProjectDir}/extra-linker-defs.xml</MtouchExtraArgs>
     <MtouchArch>ARMv7</MtouchArch>
     <MtouchUseLlvm>true</MtouchUseLlvm>
     <MtouchLink>SdkOnly</MtouchLink>
@@ -122,6 +129,7 @@
     <WarningLevel>4</WarningLevel>
     <CodesignKey>iPhone Developer</CodesignKey>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <MtouchExtraArgs>-v -v -xml=${ProjectDir}/extra-linker-defs.xml</MtouchExtraArgs>
     <MtouchArch>ARM64</MtouchArch>
     <MtouchUseLlvm>true</MtouchUseLlvm>
     <MtouchLink>SdkOnly</MtouchLink>
@@ -136,7 +144,7 @@
     <CodesignKey>iPhone Developer</CodesignKey>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <MtouchArch>ARMv7, ARM64</MtouchArch>
-    <MtouchExtraArgs>--bitcode:full</MtouchExtraArgs>
+    <MtouchExtraArgs>-v -v -xml=${ProjectDir}/extra-linker-defs.xml --bitcode:full</MtouchExtraArgs>
     <MtouchUseLlvm>true</MtouchUseLlvm>
     <MtouchLink>SdkOnly</MtouchLink>
     <MtouchHttpClientHandler>HttpClientHandler</MtouchHttpClientHandler>
@@ -155,6 +163,7 @@
     <None Include="Info.plist">
       <LogicalName>Info.plist</LogicalName>
     </None>
+    <None Include="extra-linker-defs.xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />

@@ -98,6 +98,8 @@ namespace xharness
 
 			Harness.Save (csproj, WatchOSExtensionProjectPath);
 
+			CreateExtraLinkerDefs (Suffix);
+
 			WatchOSExtensionGuid = csproj.GetProjectGuid ();
 
 			XmlDocument info_plist = new XmlDocument ();
@@ -161,6 +163,19 @@ namespace xharness
 			Harness.Save (csproj, WatchOSProjectPath);
 
 			WatchOSGuid = csproj.GetProjectGuid ();
+
+			CreateExtraLinkerDefs (Suffix);
+		}
+
+		void CreateExtraLinkerDefs (string suffix)
+		{
+			var linker_defs = Path.Combine (TargetDirectory, "extra-linker-defs.xml");
+			var target_linker_defs = Path.Combine (TargetDirectory, "extra-linker-defs" + suffix + ".xml");
+			if (File.Exists (linker_defs) && !File.Exists (target_linker_defs)) {
+				XmlDocument linker_defs_doc = new XmlDocument ();
+				linker_defs_doc.LoadWithoutNetworkAccess (linker_defs);
+				Harness.Save (linker_defs_doc, target_linker_defs);
+			}
 		}
 
 		protected override void ExecuteInternal ()

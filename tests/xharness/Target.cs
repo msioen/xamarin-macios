@@ -127,6 +127,14 @@ namespace xharness
 				info_plist.SetMinimumOSVersion (GetMinimumOSVersion (info_plist.GetMinimumOSVersion ()));
 				info_plist.SetUIDeviceFamily (UIDeviceFamily);
 				Harness.Save (info_plist, target_info_plist);
+
+				var linker_defs = Path.Combine (TargetDirectory, "extra-linker-defs.xml");
+				var target_linker_defs = Path.Combine (TargetDirectory, "extra-linker-defs" + Suffix + ".xml");
+				if (File.Exists (linker_defs) && !File.Exists (target_linker_defs)) {
+					XmlDocument linker_defs_doc = new XmlDocument ();
+					linker_defs_doc.LoadWithoutNetworkAccess (target_linker_defs);
+					Harness.Save (linker_defs_doc, target_linker_defs);
+				}
 			}
 		}
 

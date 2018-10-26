@@ -1,1 +1,2 @@
 mono-native-compat.csproj
+extra-linker-defs-*.xml
