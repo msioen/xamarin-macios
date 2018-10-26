@@ -1566,7 +1566,12 @@ namespace Xamarin.Bundler
 			case AssemblyBuildTarget.StaticObject:
 				libnative = Path.Combine (libdir, libnative + ".a");
 				compiler_flags.AddLinkWith (libnative);
-				compiler_flags.AddFramework ("GSS");
+				switch (app.Platform) {
+				case ApplePlatform.iOS:
+				case ApplePlatform.TVOS:
+					compiler_flags.AddFramework ("GSS");
+					break;
+				}
 				break;
 			default:
 				throw ErrorHelper.CreateError (100, "Invalid assembly build target: '{0}'. Please file a bug report with a test case (http://bugzilla.xamarin.com).", app.LibMonoLinkMode);
