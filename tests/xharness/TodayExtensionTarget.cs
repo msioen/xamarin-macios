@@ -22,6 +22,12 @@ namespace xharness
 			}
 		}
 
+		public override string ExtraLinkerDefsSuffix {
+			get {
+				return "-today";
+			}
+		}
+
 		public override string ProjectFileSuffix {
 			get {
 				if (MonoNativeInfo != null)
@@ -35,13 +41,6 @@ namespace xharness
 			base.CalculateName ();
 			if (MonoNativeInfo != null)
 				Name = Name + MonoNativeInfo.FlavorSuffix;
-		}
-
-		protected override string GetMinimumOSVersion (string templateMinimumOSVersion)
-		{
-			if (MonoNativeInfo != null)
-				return MonoNativeInfo.GetMinimumOSVersion ();
-			return templateMinimumOSVersion;
 		}
 
 		void CreateTodayContainerProject ()
@@ -59,6 +58,10 @@ namespace xharness
 			TodayContainerGuid = "{" + Harness.NewStableGuid ().ToString ().ToUpper () + "}";
 			ProjectGuid = TodayContainerGuid;
 			csproj.SetProjectGuid (TodayContainerGuid);
+			if (MonoNativeInfo != null) {
+				MonoNativeInfo.AddProjectDefines (csproj);
+				csproj.AddAdditionalDefines ("MONO_NATIVE_TODAY");
+			}
 			Harness.Save (csproj, TodayContainerProjectPath);
 
 			XmlDocument info_plist = new XmlDocument ();
@@ -84,8 +87,12 @@ namespace xharness
 			var ext = IsFSharp ? "fs" : "cs";
 			csproj.AddCompileInclude ("TodayExtensionMain." + ext, Path.Combine (Harness.TodayExtensionTemplate, "TodayExtensionMain." + ext), true);
 			csproj.AddInterfaceDefinition (Path.Combine (Harness.TodayExtensionTemplate, "TodayView.storyboard").Replace ('/', '\\'));
-			csproj.SetExtraLinkerDefs ("extra-linker-defs" + Suffix + ".xml");
+			csproj.SetExtraLinkerDefs ("extra-linker-defs" + ExtraLinkerDefsSuffix + ".xml");
 			csproj.FixProjectReferences ("-today");
+			if (MonoNativeInfo != null) {
+				MonoNativeInfo.AddProjectDefines (csproj);
+				csproj.AddAdditionalDefines ("MONO_NATIVE_TODAY");
+			}
 
 			Harness.Save (csproj, TodayExtensionProjectPath);
 

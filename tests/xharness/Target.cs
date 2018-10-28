@@ -37,6 +37,7 @@ namespace xharness
 		public virtual string Suffix { get { throw new NotImplementedException (); } }
 		public virtual string MakefileWhereSuffix { get { return string.Empty; } }
 		public virtual string ProjectFileSuffix { get { return Suffix; } }
+		public virtual string ExtraLinkerDefsSuffix {  get { return Suffix; } }
 		protected virtual string ProjectTypeGuids { get { throw new NotImplementedException (); } }
 		protected virtual string BindingsProjectTypeGuids { get { throw new NotImplementedException (); } }
 		protected virtual string TargetFrameworkIdentifier { get { throw new NotImplementedException (); } }
@@ -113,7 +114,7 @@ namespace xharness
 			} else {
 				inputProject.FixArchitectures (SimulatorArchitectures, DeviceArchitectures);
 				inputProject.FixInfoPListInclude (Suffix);
-				inputProject.SetExtraLinkerDefs ("extra-linker-defs" + Suffix + ".xml");
+				inputProject.SetExtraLinkerDefs ("extra-linker-defs" + ExtraLinkerDefsSuffix + ".xml");
 			}
 			Harness.Save (inputProject, ProjectPath);
 

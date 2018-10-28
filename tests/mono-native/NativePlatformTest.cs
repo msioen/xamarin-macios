@@ -11,40 +11,53 @@ namespace Mono.Native.Tests
 	public class NativePlatformTest
 	{
 		[Test]
-		public void Test ()
+		public void PlatformType ()
 		{
 			var type = MonoNativePlatform.GetPlatformType ();
 			Assert.That ((int)type, Is.GreaterThan (0), "platform type");
-
-			Console.Error.WriteLine ($"NATIVE PLATFORM TYPE: {type}");
-
-			// var usingCompat = (type & MonoNativePlatformType.MONO_NATIVE_PLATFORM_TYPE_COMPAT) != 0;
-			// Assert.AreEqual (MonoNativeConfig.UsingCompat, usingCompat, "using compatibility layer");
 		}
 
 		[Test]
 		public void TestInitialize ()
 		{
 			MonoNativePlatform.Initialize ();
+			var initialized = MonoNativePlatform.IsInitialized ();
+			Assert.IsTrue (initialized, "MonoNativePlatform.IsInitialized()");
 		}
 
 		[Test]
-		public void MartinTest ()
+		public void TestReflectionInitialize ()
+		{
+			var asm = typeof (string).Assembly;
+			var type = asm.GetType ("Mono.MonoNativePlatform");
+			Assert.IsNotNull (type, "MonoNativePlatform");
+
+			var method = type.GetMethod ("Initialize", BindingFlags.Static | BindingFlags.Public);
+			Assert.IsNotNull (method, "MonoNativePlatform.Initialize");
+
+			var method2 = type.GetMethod ("IsInitialized", BindingFlags.Static | BindingFlags.Public);
+			Assert.IsNotNull (method2, "MonoNativePlatform.IsInitialized");
+
+			method.Invoke (null, null);
+
+			var result = (bool)method2.Invoke (null, null);
+			Assert.IsTrue (result, "MonoNativePlatform.IsInitialized()");
+		}
+
+		[Test]
+		public void TestInternalCounter ()
 		{
 			MonoNativePlatform.Initialize ();
 
 			var asm = typeof (string).Assembly;
 			var type = asm.GetType ("Mono.MonoNativePlatform");
-			Console.Error.WriteLine ($"TEST: {type}");
+			Assert.IsNotNull (type, "MonoNativePlatform");
 
-			var method = type.GetMethod ("Initialize", BindingFlags.Static | BindingFlags.Public);
-			method.Invoke (null, null);
-			Console.Error.WriteLine ($"CALLED INITIALIZE!");
+			var method = type.GetMethod ("TestInternalCounter", BindingFlags.Static | BindingFlags.NonPublic);
+			Assert.IsNotNull (method, "MonoNativePlatform.TestInternalCounter");
+			var result = method.Invoke (null, null);
 
-			var method2 = type.GetMethod ("Test", BindingFlags.Static | BindingFlags.Public);
-			method2.Invoke (null, null);
-
-			Console.Error.WriteLine ($"CALLED TEST!");
+			Assert.That (result, Is.GreaterThan (0), "MonoNativePlatform.TestInternalCounter()");
 		}
 	}
 }

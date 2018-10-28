@@ -50,53 +50,42 @@ namespace xharness
 		public string ProjectPath => Path.Combine (Harness.RootDirectory, "mono-native", ProjectName + ".csproj");
 		public string TemplatePath => Path.Combine (Harness.RootDirectory, "mono-native", "mono-native.csproj.template");
 
-		public string GetMinimumOSVersion ()
-		{
-			if (Harness.Mac)
-				throw new NotImplementedException ();
-			switch (Flavor) {
-			case MonoNativeFlavor.Compat:
-				return "9.0";
-			case MonoNativeFlavor.Unified:
-				return "10.0";
-			default:
-				throw new Exception (string.Format ("Unknown MonoNativeFlavor: {0}", Flavor));
-			}
-		}
-
-		public string GetMinimumWatchOSVersion ()
-		{
-			switch (Flavor) {
-			case MonoNativeFlavor.Compat:
-				return "2.0";
-			case MonoNativeFlavor.Unified:
-				return "4.0";
-			default:
-				throw new Exception (string.Format ("Unknown MonoNativeFlavor: {0}", Flavor));
-			}
-		}
-
 		public void Convert ()
 		{
 			var inputProject = new XmlDocument ();
 
 			var xml = File.ReadAllText (TemplatePath);
 			inputProject.LoadXmlWithoutNetworkAccess (xml);
-
-			switch (Flavor) {
-			case MonoNativeFlavor.Compat:
-//				inputProject.SetTargetFrameworkIdentifier ("Xamarin.Mac");
-//				inputProject.SetTargetFrameworkVersion ("v2.0");
-//				inputProject.RemoveNode ("UseXamMacFullFramework");
-//				inputProject.AddAdditionalDefines ("MOBILE;XAMMAC");
-//				inputProject.AddReference ("Mono.Security");
-				break;
-			}
 			inputProject.SetOutputPath ("bin\\$(Platform)\\$(Configuration)" + FlavorSuffix);
 			inputProject.SetIntermediateOutputPath ("obj\\$(Platform)\\$(Configuration)" + FlavorSuffix);
 			inputProject.SetAssemblyName (inputProject.GetAssemblyName () + FlavorSuffix);
 
-			Harness.Save (inputProject, ProjectPath);
+			switch (Flavor) {
+			case MonoNativeFlavor.Compat:
+				inputProject.AddAdditionalDefines ("MONO_NATIVE_COMPAT");
+				break;
+			case MonoNativeFlavor.Unified:
+				inputProject.AddAdditionalDefines ("MONO_NATIVE_UNIFIED");
+				break;
+			default:
+				throw new Exception ($"Unknown MonoNativeFlavor: {Flavor}");
+			}
+
+			// Harness.Save (inputProject, ProjectPath);
+		}
+
+		public void AddProjectDefines (XmlDocument project)
+		{
+			switch (Flavor) {
+			case MonoNativeFlavor.Compat:
+				project.AddAdditionalDefines ("MONO_NATIVE_COMPAT");
+				break;
+			case MonoNativeFlavor.Unified:
+				project.AddAdditionalDefines ("MONO_NATIVE_UNIFIED");
+				break;
+			default:
+				throw new Exception ($"Unknown MonoNativeFlavor: {Flavor}");
+			}
 		}
 	}
 }

@@ -503,6 +503,9 @@ namespace xharness
 
 			foreach (var proj in IOSTestProjects) {
 				var file = proj.Path;
+				if (proj.MonoNativeInfo != null)
+					file = proj.MonoNativeInfo.TemplatePath;
+
 				if (!File.Exists (file))
 					throw new FileNotFoundException (file);
 

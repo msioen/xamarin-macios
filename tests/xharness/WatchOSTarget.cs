@@ -30,6 +30,10 @@ namespace xharness
 			WatchOSAppGuid = "{" + Harness.NewStableGuid ().ToString ().ToUpper () + "}";
 			csproj.SetProjectGuid (WatchOSAppGuid);
 			csproj.FixInfoPListInclude (suffix);
+			if (MonoNativeInfo != null) {
+				MonoNativeInfo.AddProjectDefines (csproj);
+				csproj.AddAdditionalDefines ("MONO_NATIVE_WATCH");
+			}
 			Harness.Save (csproj, WatchOSAppProjectPath);
 
 			XmlDocument info_plist = new XmlDocument ();
@@ -38,8 +42,7 @@ namespace xharness
 			info_plist.SetCFBundleIdentifier (BundleIdentifier + ".watchkitapp");
 			info_plist.SetPListStringValue ("WKCompanionAppBundleIdentifier", BundleIdentifier);
 			info_plist.SetPListStringValue ("CFBundleName", Name);
-			if (MonoNativeInfo != null)
-				info_plist.SetMinimumOSVersion (MonoNativeInfo.GetMinimumWatchOSVersion ());
+			info_plist.SetMinimumOSVersion (GetMinimumOSVersion (info_plist.GetMinimumOSVersion ()));
 			Harness.Save (info_plist, target_info_plist);
 		}
 
@@ -54,6 +57,10 @@ namespace xharness
 			WatchOSGuid = "{" + Harness.NewStableGuid ().ToString ().ToUpper () + "}";
 			csproj.SetProjectGuid (WatchOSGuid);
 			csproj.FixInfoPListInclude (Suffix);
+			if (MonoNativeInfo != null) {
+				MonoNativeInfo.AddProjectDefines (csproj);
+				csproj.AddAdditionalDefines ("MONO_NATIVE_WATCH");
+			}
 			Harness.Save (csproj, WatchOSProjectPath);
 
 			XmlDocument info_plist = new XmlDocument ();
@@ -61,8 +68,7 @@ namespace xharness
 			info_plist.LoadWithoutNetworkAccess (Path.Combine (Harness.WatchOSContainerTemplate, "Info.plist"));
 			info_plist.SetCFBundleIdentifier (BundleIdentifier);
 			info_plist.SetCFBundleName (Name);
-			if (MonoNativeInfo != null)
-				info_plist.SetMinimumOSVersion (MonoNativeInfo.GetMinimumOSVersion ());
+			info_plist.SetMinimumOSVersion ("9.0");
 			Harness.Save (info_plist, target_info_plist);
 		}
 
@@ -85,9 +91,14 @@ namespace xharness
 			csproj.RemoveReferences ("OpenTK-1.0");
 			var ext = IsFSharp ? "fs" : "cs";
 			csproj.AddCompileInclude ("InterfaceController." + ext, Path.Combine (Harness.WatchOSExtensionTemplate, "InterfaceController." + ext));
-			csproj.SetExtraLinkerDefs ("extra-linker-defs" + Suffix + ".xml");
+			csproj.SetExtraLinkerDefs ("extra-linker-defs" + ExtraLinkerDefsSuffix + ".xml");
 			csproj.SetMtouchUseBitcode (true, "iPhone", "Release");
 			csproj.SetMtouchUseLlvm (true, "iPhone", "Release");
+
+			if (MonoNativeInfo != null) {
+				MonoNativeInfo.AddProjectDefines (csproj);
+				csproj.AddAdditionalDefines ("MONO_NATIVE_WATCH");
+			}
 
 			// Not linking a watch extensions requires passing -Os to the native compiler.
 			// https://github.com/mono/mono/issues/9867
@@ -158,7 +169,7 @@ namespace xharness
 			csproj.SetImport (IsBindingProject ? BindingsImports : Imports);
 			csproj.AddAdditionalDefines ("XAMCORE_2_0;XAMCORE_3_0");
 			csproj.FixProjectReferences (Suffix);
-			csproj.SetExtraLinkerDefs ("extra-linker-defs" + Suffix + ".xml");
+			csproj.SetExtraLinkerDefs ("extra-linker-defs" + ExtraLinkerDefsSuffix + ".xml");
 			csproj.FixTestLibrariesReferences (Platform);
 			Harness.Save (csproj, WatchOSProjectPath);
 
@@ -211,9 +222,29 @@ namespace xharness
 				Name = Name + MonoNativeInfo.FlavorSuffix;
 		}
 
+		protected override string GetMinimumOSVersion (string templateMinimumOSVersion)
+		{
+			if (MonoNativeInfo == null)
+				return templateMinimumOSVersion;
+			switch (MonoNativeInfo.Flavor) {
+			case MonoNativeFlavor.Compat:
+				return "2.0";
+			case MonoNativeFlavor.Unified:
+				return "4.0";
+			default:
+				throw new Exception ($"Unknown MonoNativeFlavor: {MonoNativeInfo.Flavor}");
+			}
+		}
+
 		public override string Suffix {
 			get {
 				return MonoNativeInfo != null ? MonoNativeInfo.FlavorSuffix + "-watchos" : "-watchos";
+			}
+		}
+
+		public override string ExtraLinkerDefsSuffix {
+			get {
+				return "-watchos";
 			}
 		}
 

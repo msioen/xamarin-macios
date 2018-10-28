@@ -32,7 +32,8 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'Default' ">
     <StartAction>Project</StartAction>
-    <StartArguments>--verbose --configure --autoconf --rootdir /Developer/Work/xamarin-macios/tests</StartArguments>
+    <StartArguments>--configure --autoconf --rootdir /Developer/Work/xamarin-macios/tests</StartArguments>
+    <StartWorkingDirectory>..</StartWorkingDirectory>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'Run Jenkins tests' ">
     <StartAction>Project</StartAction>

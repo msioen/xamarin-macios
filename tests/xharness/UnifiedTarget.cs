@@ -11,7 +11,13 @@ namespace xharness
 				return MonoNativeInfo != null ? MonoNativeInfo.FlavorSuffix : "-ios";
 			}
 		}
-			
+
+		public override string ExtraLinkerDefsSuffix {
+			get {
+				return string.Empty;
+			}
+		}
+
 		protected override string ProjectTypeGuids {
 			get {
 				return "{FEACFBD2-3405-455C-9665-78FE426C6842};" + LanguageGuid;
@@ -64,11 +70,18 @@ namespace xharness
 				Name = Name + MonoNativeInfo.FlavorSuffix;
 		}
 
-		protected override string GetMinimumOSVersion(string templateMinimumOSVersion)
+		protected override string GetMinimumOSVersion (string templateMinimumOSVersion)
 		{
-			if (MonoNativeInfo != null)
-				return MonoNativeInfo.GetMinimumOSVersion ();
-			return templateMinimumOSVersion;
+			if (MonoNativeInfo == null)
+				return templateMinimumOSVersion;
+			switch (MonoNativeInfo.Flavor) {
+			case MonoNativeFlavor.Compat:
+				return "8.0";
+			case MonoNativeFlavor.Unified:
+				return "10.0";
+			default:
+				throw new Exception ($"Unknown MonoNativeFlavor: {MonoNativeInfo.Flavor}");
+			}
 		}
 
 		protected override int[] UIDeviceFamily {
@@ -111,8 +124,12 @@ namespace xharness
 
 		protected override void ExecuteInternal ()
 		{
-			if (MonoNativeInfo != null)
-				base.ExecuteInternal ();
+			if (MonoNativeInfo == null)
+				return;
+
+			MonoNativeInfo.AddProjectDefines (inputProject);
+			inputProject.AddAdditionalDefines ("MONO_NATIVE_IOS");
+			base.ExecuteInternal ();
 		}
 	}
 }

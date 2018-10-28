@@ -168,12 +168,15 @@
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
-    <Compile Include="NativePlatformTest.cs" />
+    <Compile Include="NativePlatformConfig.cs" />
     <Compile Include="..\..\external\mono\mcs\class\corlib\Mono\MonoNativePlatform.cs">
       <Link>MonoNativePlatform.cs</Link>
     </Compile>
     <Compile Include="..\..\external\mono\mcs\class\corlib\Mono\MonoNativePlatformType.cs">
       <Link>MonoNativePlatformType.cs</Link>
+    </Compile>
+    <Compile Include="..\..\external\mono\mcs\class\corlib\Test\Mono\NativePlatformTest.cs">
+      <Link>NativePlatformTest.cs</Link>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
