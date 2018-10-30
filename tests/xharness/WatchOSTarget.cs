@@ -109,8 +109,6 @@ namespace xharness
 
 			Harness.Save (csproj, WatchOSExtensionProjectPath);
 
-			CreateExtraLinkerDefs (Suffix);
-
 			WatchOSExtensionGuid = csproj.GetProjectGuid ();
 
 			XmlDocument info_plist = new XmlDocument ();
@@ -120,10 +118,7 @@ namespace xharness
 			if (BundleIdentifier.Length >= 58)
 				BundleIdentifier = BundleIdentifier.Substring (0, 57); // If the main app's bundle id is 58 characters (or sometimes more), then the watch extension crashes at launch. radar #29847128.
 			info_plist.SetCFBundleIdentifier (BundleIdentifier + ".watchkitapp.watchkitextension");
-			if (MonoNativeInfo != null)
-				info_plist.SetMinimumOSVersion (MonoNativeInfo.GetMinimumWatchOSVersion ());
-			else
-				info_plist.SetMinimumOSVersion ("2.0");
+			info_plist.SetMinimumOSVersion ("2.0");
 			info_plist.SetUIDeviceFamily (4);
 			info_plist.AddPListStringValue ("RemoteInterfacePrincipleClass", "InterfaceController");
 			info_plist.AddPListKeyValuePair ("NSExtension", "dict", string.Format (
@@ -174,19 +169,6 @@ namespace xharness
 			Harness.Save (csproj, WatchOSProjectPath);
 
 			WatchOSGuid = csproj.GetProjectGuid ();
-
-			CreateExtraLinkerDefs (Suffix);
-		}
-
-		void CreateExtraLinkerDefs (string suffix)
-		{
-			var linker_defs = Path.Combine (TargetDirectory, "extra-linker-defs.xml");
-			var target_linker_defs = Path.Combine (TargetDirectory, "extra-linker-defs" + suffix + ".xml");
-			if (File.Exists (linker_defs) && !File.Exists (target_linker_defs)) {
-				XmlDocument linker_defs_doc = new XmlDocument ();
-				linker_defs_doc.LoadWithoutNetworkAccess (linker_defs);
-				Harness.Save (linker_defs_doc, target_linker_defs);
-			}
 		}
 
 		protected override void ExecuteInternal ()
@@ -238,7 +220,7 @@ namespace xharness
 
 		public override string Suffix {
 			get {
-				return MonoNativeInfo != null ? MonoNativeInfo.FlavorSuffix + "-watchos" : "-watchos";
+				return "-watchos";
 			}
 		}
 

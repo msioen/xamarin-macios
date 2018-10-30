@@ -8,7 +8,7 @@ namespace xharness
 	{
 		public override string Suffix {
 			get {
-				return MonoNativeInfo != null ? MonoNativeInfo.FlavorSuffix : "-ios";
+				return "-ios";
 			}
 		}
 
@@ -124,7 +124,7 @@ namespace xharness
 
 		protected override void ExecuteInternal ()
 		{
-			if (MonoNativeInfo == null)
+			if (true || MonoNativeInfo == null)
 				return;
 
 			MonoNativeInfo.AddProjectDefines (inputProject);

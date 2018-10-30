@@ -9,7 +9,7 @@ namespace xharness
 	{
 		public override string Suffix {
 			get {
-				return MonoNativeInfo != null ? MonoNativeInfo.FlavorSuffix + "-tvos" : "-tvos";
+				return "-tvos";
 			}
 		}
 

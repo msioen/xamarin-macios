@@ -52,6 +52,8 @@ namespace xharness
 
 		public void Convert ()
 		{
+			return;
+
 			var inputProject = new XmlDocument ();
 
 			var xml = File.ReadAllText (TemplatePath);
