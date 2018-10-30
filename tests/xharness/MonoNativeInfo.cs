@@ -52,8 +52,6 @@ namespace xharness
 
 		public void Convert ()
 		{
-			return;
-
 			var inputProject = new XmlDocument ();
 
 			var xml = File.ReadAllText (TemplatePath);
@@ -62,18 +60,13 @@ namespace xharness
 			inputProject.SetIntermediateOutputPath ("obj\\$(Platform)\\$(Configuration)" + FlavorSuffix);
 			inputProject.SetAssemblyName (inputProject.GetAssemblyName () + FlavorSuffix);
 
-			switch (Flavor) {
-			case MonoNativeFlavor.Compat:
-				inputProject.AddAdditionalDefines ("MONO_NATIVE_COMPAT");
-				break;
-			case MonoNativeFlavor.Unified:
-				inputProject.AddAdditionalDefines ("MONO_NATIVE_UNIFIED");
-				break;
-			default:
-				throw new Exception ($"Unknown MonoNativeFlavor: {Flavor}");
-			}
+			AddProjectDefines (inputProject);
 
-			// Harness.Save (inputProject, ProjectPath);
+			Harness.Save (inputProject, ProjectPath);
+		}
+
+		protected virtual void Convert (XmlDocument inputProject)
+		{
 		}
 
 		public void AddProjectDefines (XmlDocument project)
